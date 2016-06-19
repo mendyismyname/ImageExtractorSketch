@@ -1,0 +1,24 @@
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "name" : "ExtractImage",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ],
+    "title" : "ExtractImage"
+  },
+  "identifier" : "com.example.sketch.a4c609d0-2127-4e05-bca7-3cb212e89f06",
+  "version" : "1.0",
+  "description" : "",
+  "authorEmail" : "",
+  "name" : "ExtractImage"
+}
