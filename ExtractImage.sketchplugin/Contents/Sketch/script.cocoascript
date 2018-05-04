@@ -1,18 +1,37 @@
-var onRun = function(context) {
-  
-  var image = context.selection[0].style().fills().firstObject().image();
-  var layerName = 'Placeholder Img';
-  var layer = MSBitmapLayer.alloc().initWithFrame_image(
-    NSMakeRect(0, 0, context.selection[0].rect().size.width, context.selection[0].rect().size.height),
-    image)
-  var page = context.document.currentPage();
-var artboard = page.currentArtboard();
+function extractImages(context) {
 
-  layer.frame().setWidth(context.selection[0].rect().size.width);
-  layer.frame().setHeight(context.selection[0].rect().size.height);
-  var addTo = (artboard) ? artboard : page;
-  addTo.addLayers([layer]);
-  layer.setName(layerName);
-  layer.setConstrainProportions(0);
-  layer.frame().size = layer.NSImage().size();
+  var document = context.document
+  var page = document.currentPage()
+  var selection = context.selection
+  var selectionCount = selection.length
+
+  if (selectionCount > 0) {
+    for (var i = 0; i < selectionCount; i++) {
+      var layer = selection.objectAtIndex(i)
+      var artboard = layer.parentArtboard()
+      var placeInto = (artboard) ? artboard : page
+
+      if (layer.className() != "MSShapeGroup") {
+        document.showMessage('Please select only objects with fills! ' + layer.name() + ' is ' + layer.className());
+      } else {
+        var image = layer.style().fills().firstObject().image();
+        var layerName = layer.name();
+        var layerFrame = layer.frame();
+        var layerSize = layer.rect().size;
+        var layerImage = MSBitmapLayer.alloc().initWithFrame_image(
+          NSMakeRect(layerFrame.x(), layerFrame.y(), layerSize.width, layerSize.height),
+          image)
+
+        layerImage.frame().setWidth(layerSize.width);
+        layerImage.frame().setHeight(layerSize.height);
+        placeInto.addLayers([layerImage]);
+        layerImage.setName(layerName);
+        layerImage.setConstrainProportions(0);
+        layerImage.frame().size = layerImage.NSImage().size();
+        layer.removeFromParent()
+      }
+    }
+  } else {
+    document.showMessage('Nothing is selected!')
+  }
 };
